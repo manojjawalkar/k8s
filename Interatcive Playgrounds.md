@@ -1,0 +1,4 @@
+- https://killercoda.com/killer-shell-ckad
+- https://killercoda.com/playgrounds/scenario/kubernetes
+- https://labs.play-with-k8s.com/
+- 
