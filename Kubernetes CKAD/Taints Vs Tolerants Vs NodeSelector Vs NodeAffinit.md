@@ -1,12 +1,3 @@
----
-title: Taints Vs Tolerants Vs NodeSelector Vs NodeAffinity
-updated: 2024-01-15 08:08:42Z
-created: 2024-01-15 06:43:48Z
-latitude: 19.07598370
-longitude: 72.87765590
-altitude: 0.0000
----
-
 Taints Vs Tolerants Vs NodeSelector Vs NodeAffinity
 
 I have a lot of confusion as to which one is used when and why. To understand this, let's go back in time when we had none of these and the pods can be scheduled on any node that is picked up by scheduler. 
