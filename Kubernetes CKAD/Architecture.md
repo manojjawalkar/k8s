@@ -1,11 +1,9 @@
 # Naming convention
 **Node** - A machine where k8s is installed
-
 **Worker node** - Where containers are launched by k8s
 
 
 **Cluster** - a set of nodes grouped together
-
 **Master node** - A node with k8s installed and configured as master
  - **Role of Master node -** 
 	 - Responsible to manage the cluster

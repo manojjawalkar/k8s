@@ -1,4 +1,4 @@
-# Taints Vs Tolerants Vs NodeSelector Vs NodeAffinity
+Taints Vs Tolerants Vs NodeSelector Vs NodeAffinity
 
 I have a lot of confusion as to which one is used when and why. To understand this, let's go back in time when we had none of these and the pods can be scheduled on any node that is picked up by scheduler. 
 

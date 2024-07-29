@@ -27,7 +27,10 @@ kubectl run nginx --image=nginx --dry-run=client -o yaml > nginx-pod.yaml
 **Generate POD Manifest YAML file (-o yaml). Don't create it(--dry-run)**
 
 `kubectl run nginx --image=nginx --dry-run=client -o yaml`
-
+```
+# Create a pod based on the JSON passed into stdin
+  cat pod.json | kubectl create -f -
+```
 
 
 ## Deployment

@@ -1,21 +1,27 @@
-# Get all k8s objects 
-`kubectl get all`
-# Create a new POD with an image
+## Get all k8s objects 
+```
+kubectl get all
+```
+## Create a new POD with an image
 
-`kubectl run nginx --image=nginx`
+```
+kubectl run nginx --image=nginx
+```
 
-# Get list of pods
+## Get list of pods
 
-`kubectl get pods`
+```
+kubectl get pods
+```
 
-# Get metadata about a pod
+## Get metadata about a pod
 
 ```
 1. kubectl describe pod <POD_NAME>
 2. kubectl describe pod
 ```
 
-# Check which nodes the pods are placed on
+## Check which nodes the pods are placed on
 
 ```bash
 1. kubectl describe pod <POD_NAME> | egrep "Name|Node"
@@ -23,15 +29,13 @@
 3. kubectl get pods -o wide
 ```
 
-# Check number of containers inside a pod
-
+## Check number of containers inside a pod
 ```bash
 Run kubectl describe pod <POD_NAME> and look under the Containers section
 1. kubectl describe pod <POD_NAME>
 ```
 
-## Sample output snippet
-
+### Sample output snippet
 ```
 .
 .
@@ -82,18 +86,21 @@ webapp          1/2     ImagePullBackOff   0               38m
 
 The pod webapp has 2 containers but only 1 is in running state. So READY tells us information about running_containers_in_pod/total_containers_in_pod
 
-# Create an nginx pod and expose it to port 8080
+## Create an nginx pod and expose it to port 8080
 ```
 kc run custom-nginx --image=nginx --port=8080
 ```
-# Delete a pod
 
+## Delete a pod
 ```
-1. kubectl delete pod webapp
+kubectl delete pod webapp
+
+# Deleting all pods at once
+k delete pods --all
 ```
 
-# Use the kubectl run command to create a pod definition YAML file
 
+## Use the kubectl run command to create a pod definition YAML file
 ```
 ~ kubectl run redis --image=redis123 --dry-run=client -o yaml > redis-definition.yaml
 
@@ -118,17 +125,28 @@ spec:
 status: {}
 ```
 
-# Create a resource from the manifest file
+## Create a resource from the manifest file
 
 ```
 1. kubectl create -f redis-definition.yaml 
 ```
 
-# Edit pod definition and re-run
-
+## Edit pod definition and re-run
 ```
 1. kubectl edit pod redis
 2. kubectl apply -f redis-definition.yaml
+
+# Sometimes when you edit a pod you will not be able
+# to save the configuration. k8s will create a tmp file
+# with your changes. From there you have two options to 
+# update the pod. First is to delete the pod and run the
+# create command `k create -f /tmp/kubectl-edit-ccvrq.yaml`
+# Second is to use the replace command with --force flag
+
+3. k delete pod myapp
+4. k create -f /tmp/kubectl-edit-ccvrq.yaml
+OR
+5. k replace --force -f /tmp/kubectl-edit-ccvrq.yaml
 ```
 
 **A Note on Editing Existing Pods**  
@@ -150,7 +168,7 @@ In any of the practical quizzes, if you are asked to edit an existing POD, pleas
 
 * * *
 
-# ReplicaSet
+## ReplicaSet
 
 ```
 1. kubectl create -f replicaset-definition.yaml
@@ -162,20 +180,20 @@ In any of the practical quizzes, if you are asked to edit an existing POD, pleas
 
 replace is use to update the replicaset
 
-# Deployment
+## Deployment
 
 ```
 1. kubectl create -f deployment-definition.yaml
 2. kubectl get deployment
 ```
 
-## - Create a new deployment called redis-deploy in the dev-ns namespace with the redis image. It should have 2 replicas
+### Create a new deployment called redis-deploy in the dev-ns namespace with the redis image. It should have 2 replicas
 
  ```
  kc create deployment redis-deploy -n=dev-ns --image=redis --replicas=2
  ```
  
- ## Deploy a redis pod using the redis:alpine image with the labels set to tier=db
+ ### Deploy a redis pod using the redis:alpine image with the labels set to tier=db
  ```
  kc run redis --image=redis:alpine --labels="tier=db"
  ```
@@ -190,8 +208,73 @@ replace is use to update the replicaset
 kubectl exec -it my-app -- sh
 ```
 
+## Get a shell to a single container in a multi-container pod:
+
+```bash
+kubectl exec -it <NAME_OF_POD> -c <NAME_OF_CONTAINER> -- /bin/bash
+
+# name of the container can be obtain from the k get pods -o yaml output
+kubectl exec -it two-containers-pod -c nginx-container -- /bin/bash
+```
+
 ## Checking the status of Pod:
 ### The reason for failure
 ```
 kc describe pod mypod | grep -C3 "Last State:"
+kc get pods --watch
+```
+
+## Inspecting logs of a pod
+```
+kubectl logs myapp
+kubectl logs kibana
+# if pod is in a namespace
+kubectl -n elastic-stack logs kibana
+
+# Or you can exec into the pod to check the logs. 
+# For example, we have an app that is storing its logs at /log/app.log
+kubectl exec -it myapp -- cat /log/app.log
+
+
+```
+
+## Using alias for namespace
+```
+alias kns="kubectl -n=myNamespace"
+kns get pods
+```
+
+## Save configuration of all pods at once
+```
+k get pods -o yaml > all-pods.yaml
+```
+
+## Checking IP address of pods
+The IP column will contain the internal cluster IP address for each pod.
+
+```
+controlplane $ kubectl get pod -o wide
+NAME      READY   STATUS    RESTARTS   AGE    IP            NODE     NOMINATED NODE   READINESS GATES
+advait    1/1     Running   0          16m    192.168.1.4   node01   <none>           <none>
+checkme   2/2     Running   0          4m6s   192.168.1.6   node01   <none>           <none>
+
+controlplane $ k get pods -o custom-columns=NAME:metadata.name,IP:status.podIP
+NAME      IP
+advait    192.168.1.4
+checkme   192.168.1.6
+
+
+# If you have a multi container pod, you can exec into
+# the pod using the -c flag like below
+
+-c nginx-container
+```
+
+## Finding container names in a multi container pod
+```
+controlplane $ k get pods checkme  -o json | jq [.spec.containers[].name]
+[
+  "frontend",
+  "backend"
+]
 ```

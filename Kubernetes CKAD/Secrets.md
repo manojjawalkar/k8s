@@ -89,19 +89,17 @@ spec:
 ```
 
 ## Injecting a secret as a volume
-```yaml
-.
-.
+```
+...
 spec:
 	containers:
 		- name: myapp-backend
 		  image: mysql
-volumes:
-	- name: app-secret-volume
-	  secret:
-	  	secretName: myapp-secret
-.
-.
+	volumes:
+		- name: app-secret-volume
+	  	  secret:
+	  	  	jsecretName: myapp-secret
+...
 ```
 **NOTE**: *If you were to mount the Secret as a volume in the Pod, each attribute in the Secret is created as a file with the value of the Secret as its content. In this case, since we have three attributes in our Secret, three files are created. And if we look at the contents of the DB_Password file, we see the paswrd in it. So, here are some things to keep in mind when working with Secrets. First of all, note that Secrets are not encrypted. They're only encoded, meaning, anyone can look up the file that you created for Secrets, or get the Secret object and then decode it using the methods that we discussed before, to see the confidential data. So, remember, not to check-in your Secret definition files along with your code when you push to GitHub or something.*
 
@@ -156,6 +154,24 @@ DB_PasswordpasswdOpaque"
 controlplane $
 ``` 
 	
+	
+## Checking the type of the secret
+```
+# In the output of the kubectl describe secret command, look at
+# the Type used for the dashboard-token secret.
+controlplane ~ ➜  k describe secret dashboard-token
+Name:         dashboard-token
+Namespace:    default
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: dashboard-sa
+              kubernetes.io/service-account.uid: 2e503fa1-b57b-4e11-84f0-344ddb720b6a
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+...
+```
 
 ## The way kubernetes handles secrets 
 1. A secret is only sent to a node if a pod on that node requires it.

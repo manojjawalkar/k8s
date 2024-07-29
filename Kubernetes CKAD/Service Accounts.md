@@ -8,7 +8,7 @@ A service account is a type of non-human account that, in Kubernetes, provides a
 
 ## Creating a SA
 
-NOTE: In the K8s version before 1.24, every time we would create a service account, a non-expiring secret token (Mountable secrets & Tokens) was created by default. However, from version 1.24 onwards, it was disbanded and **no secret token is created by default** when we create a service account
+NOTE: In the K8s version before 1.24, every time we would create a service account, a non-expiring secret token (Mountable secrets & Tokens) was created by default. However, from version 1.24 onwards, it was disbanded and **NO secret token is created by default** when we create a service account
 
 ```bash
 $ k create serviceaccount dashboard-sa
@@ -56,9 +56,12 @@ NOTE: For Deployment objects we can edit the SA
 Use the `kubectl edit` command for the deployment and specify the `serviceAccountName` field inside the pod spec. Or make use of the `kubectl set` command. Run the following command to use the newly created service account: - `kubectl set serviceaccount deploy/web-dashboard dashboard-sa`
 
 OR
+
 - Save the deployment yaml
-	- `k get deployment web-dashboard -o yaml > web-dashboard-deployment.yaml`
-- Edit to add the serviceAccountName: <SA_NAME> inside the deployments containers' spec
+    - `k get deployment web-dashboard -o yaml > web-dashboard-deployment.yaml`
+- Edit to add the serviceAccountName: &lt;SA_NAME&gt; inside the deployments containers' spec
+- “containerPort” defines the port on which app can be reached out inside the container.
+
 ```yaml
 spec:
   progressDeadlineSeconds: 600
@@ -93,13 +96,13 @@ spec:
         terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       serviceAccountName: dashboard-sa
-	...
+    ...
 ```
-- delete teh deployment
-	- controlplane ~ ➜  k delete deployment web-dashboard
-- recreate the deployment
-	- controlplane ~ ➜  k apply -f web-dashboard-deployment.yaml 
 
+- delete teh deployment
+    - controlplane ~ ➜ k delete deployment web-dashboard
+- recreate the deployment
+    - controlplane ~ ➜ k apply -f web-dashboard-deployment.yaml
 
 **Editing a Pod**
 

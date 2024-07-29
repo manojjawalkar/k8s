@@ -14,24 +14,24 @@ Both the terms have same purpose. Replication controller is the older technology
 apiVersion: v1
 kind: ReplicationController
 metadata:
-        name: myapp-rc
-        lables:
-                app: myapp
-                type: front-end
+   name: myapp-rc
+   lables:
+      app: myapp
+      type: front-end
 spec:
-        template:
-                metadata:
-                        name: myapp-pod
-                        lables:
-                                app: myapp
-                                type: front-end
-                spec:
-                        containers:
-                                - name: nginx-container
-                                  image: nginx
-					replicas: 2
-					selector: 
-									app: myapp
+   template:
+      	metadata:
+      	   name: myapp-pod
+      	      lables:
+      	        app: myapp
+      	        type: front-end
+      	spec:
+      	   containers:
+      	      - name: nginx-container
+      	        image: nginx
+	replicas: 2
+	selector: 
+		app: myapp
 ```
 
 ### Creating and checking pods with Replication Controller
@@ -71,7 +71,7 @@ spec:
 	2. kubectl get replicaset
 	3. kubectl get pods
 	
-	
+We use `selector` here because replicaset can not only manage pods created using the definition file but can also manage the existing pods if the label matches.
 * * *
 ## Scaling Replicas
 We have three options
